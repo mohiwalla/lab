@@ -6,6 +6,7 @@ import { projects } from '../data/projects';
 const fmt = (ym: string) =>
   new Date(`${ym}-01T00:00:00Z`).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 const num = (i: number) => String(i + 1).padStart(2, '0');
+const list = [...projects].reverse().map((p, i) => ({ p, n: num(i) }));
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 ---
 
@@ -31,12 +32,12 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
         </div>
         <nav class="index" aria-label="Contents">
           <ol>
-            {projects.map((p, i) => (
+            {list.map(({ p, n }, i) => (
               <li>
                 <a href={`#${p.slug}`}>
-                  <span class="n">{num(i)}</span>
+                  <span class="n">{n}</span>
                   <span class="t">{p.name}</span>
-                  <span class="lead"></span>
+                  {/* <span class="lead"></span> */}
                   <time class="d" datetime={p.date}>{fmt(p.date)}</time>
                 </a>
               </li>
@@ -46,10 +47,10 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
       </section>
 
       <div class="entries">
-        {projects.map((p, i) => (
+        {list.map(({ p, n }, i) => (
           <article class="entry" id={p.slug}>
             <div class="no">
-              <span class="num">{num(i)}</span>
+              <span class="num">{n}</span>
               <time datetime={p.date}>{fmt(p.date)}</time>
             </div>
             <div class="text">
@@ -60,13 +61,15 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
               <p class="hook">{p.hook}</p>
               <p class="desc">{p.description}</p>
               <p class="links">
-                <a class="go" href={p.live} {...ext}><svg class="ico line" aria-hidden="true"><use href="#globe"></use></svg>Open</a>
+                {p.live && (
+                  <a class="go" href={p.live} {...ext}><svg class="ico line" aria-hidden="true"><use href="#globe"></use></svg>Open</a>
+                )}
                 {p.source && (
                   <a class="go" href={p.source} {...ext}><svg class="ico fill" aria-hidden="true"><use href="#github"></use></svg>Source</a>
                 )}
               </p>
             </div>
-            <a class="fig" href={p.live} {...ext} tabindex="-1" aria-hidden="true">
+            <a class="fig" href={p.live ?? p.source} {...ext} tabindex="-1" aria-hidden="true">
               <Image
                 class:list={['shot', { invert: p.invertInDark, 'has-dark': !!p.shotDark }]}
                 src={p.shot}
@@ -101,4 +104,28 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
       </nav>
     </footer>
   </div>
+  <script>
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (fine && !calm) {
+      const MAX = 8;
+      document.querySelectorAll<HTMLElement>('.fig').forEach((card) => {
+        card.addEventListener('pointermove', (e) => {
+          const r = card.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width;
+          const y = (e.clientY - r.top) / r.height;
+          card.classList.add('tilting');
+          card.style.setProperty('--ry', `${(x - 0.5) * 2 * MAX}deg`);
+          card.style.setProperty('--rx', `${(0.5 - y) * 2 * MAX}deg`);
+          card.style.setProperty('--gx', `${x * 100}%`);
+          card.style.setProperty('--gy', `${y * 100}%`);
+        });
+        card.addEventListener('pointerleave', () => {
+          card.classList.remove('tilting');
+          card.style.setProperty('--rx', '0deg');
+          card.style.setProperty('--ry', '0deg');
+        });
+      });
+    }
+  </script>
 </Base>

@@ -63,14 +63,15 @@ body {
 }
 a {
   color: inherit;
-  text-decoration: underline;
+  text-decoration: underline dotted;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
-  text-decoration-color: var(--ink-2);
+  text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
 }
 a:hover {
   color: var(--accent);
   text-decoration-color: currentColor;
+  text-decoration-style: solid;
 }
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -143,7 +144,6 @@ h1 {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--rule);
 }
 .index li {
   border-bottom: 1px solid var(--rule-2);
@@ -156,6 +156,9 @@ h1 {
   font: 400 0.8125rem/1.4 var(--mono);
   text-decoration: none;
 }
+.index .d {
+  margin-left: auto;
+}
 .index .n,
 .index .d {
   flex: none;
@@ -167,10 +170,10 @@ h1 {
   text-overflow: ellipsis;
   white-space: nowrap;
   font: 400 1.125rem/1.2 var(--serif);
-  text-decoration: underline;
+  text-decoration: underline dotted;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
-  text-decoration-color: var(--ink-2);
+  text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
 }
 .index .lead {
   flex: 1;
@@ -181,6 +184,7 @@ h1 {
 .index a:hover .t {
   color: var(--accent);
   text-decoration-color: currentColor;
+  text-decoration-style: solid;
 }
 
 /* entries */
@@ -269,14 +273,34 @@ h1 {
 .ico.fill {
   fill: currentColor;
 }
-.go .go:hover .fig {
+.fig {
   grid-area: fig;
   display: block;
   min-width: 0;
+  position: relative;
   overflow: hidden;
-  border: 1px solid var(--rule);
-  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--rule) 50%, transparent);
+  border-radius: 10px;
   background: var(--bg-2);
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.5s ease;
+  will-change: transform;
+}
+.fig::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgb(255 255 255 / 0.18), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.fig.tilting {
+  transition: transform 0.08s linear, box-shadow 0.5s ease;
+  box-shadow: 0 24px 50px -24px rgb(0 0 0 / 0.45);
+}
+.fig.tilting::after {
+  opacity: 1;
 }
 .fig img {
   display: block;
@@ -285,16 +309,12 @@ h1 {
   aspect-ratio: 16 / 10;
   object-fit: cover;
   filter: var(--dark-dim);
-  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .shot-dark {
   display: none !important;
 }
 .fig img.invert {
   filter: var(--dark-img);
-}
-.fig:hover img {
-  transform: scale(1.025);
 }
 
 footer {
@@ -328,19 +348,25 @@ footer {
 @media (min-width: 64em) {
   .hero {
     grid-template-columns: minmax(0, 1fr) 21rem;
-    align-items: end;
+    align-items: start;
     gap: 4rem;
     padding: 4rem 0 3rem;
   }
   .entry {
     grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 30rem);
     grid-template-areas: 'no text fig';
-    align-items: center;
+    align-items: start;
     gap: 3rem;
     padding: 3rem 0;
   }
   .no {
     align-self: start;
+  }
+  .num {
+    text-box: trim-both cap alphabetic;
+  }
+  .text .name {
+    margin-top: 0;
   }
 }
 @media (prefers-color-scheme: dark) {
