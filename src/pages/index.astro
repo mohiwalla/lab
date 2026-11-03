@@ -68,7 +68,7 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
             </div>
             <a class="fig" href={p.live} {...ext} tabindex="-1" aria-hidden="true">
               <Image
-                class:list={{ invert: p.invertInDark }}
+                class:list={['shot', { invert: p.invertInDark, 'has-dark': !!p.shotDark }]}
                 src={p.shot}
                 alt={p.shotAlt}
                 widths={[640, 960, 1280]}
@@ -76,6 +76,17 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
                 loading={i === 0 ? 'eager' : 'lazy'}
                 draggable="false"
               />
+              {p.shotDark && (
+                <Image
+                  class="shot shot-dark"
+                  src={p.shotDark}
+                  alt={p.shotAlt}
+                  widths={[640, 960, 1280]}
+                  sizes="(min-width: 64em) 30rem, 100vw"
+                  loading="lazy"
+                  draggable="false"
+                />
+              )}
             </a>
           </article>
         ))}

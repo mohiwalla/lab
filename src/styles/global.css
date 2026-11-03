@@ -287,6 +287,9 @@ h1 {
   filter: var(--dark-dim);
   transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
+.shot-dark {
+  display: none !important;
+}
 .fig img.invert {
   filter: var(--dark-img);
 }
@@ -339,6 +342,22 @@ footer {
   .no {
     align-self: start;
   }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .shot.has-dark {
+    display: none;
+  }
+  :root:not([data-theme='light']) .shot-dark {
+    display: block !important;
+    filter: none;
+  }
+}
+:root[data-theme='dark'] .shot.has-dark {
+  display: none;
+}
+:root[data-theme='dark'] .shot-dark {
+  display: block !important;
+  filter: none;
 }
 @media (prefers-reduced-motion: reduce) {
   html {

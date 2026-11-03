@@ -2,6 +2,7 @@ import type { ImageMetadata } from 'astro';
 import dinoShot from '../assets/projects/dino-3d.webp';
 import dinoMark from '../assets/projects/dino-3d-mark.png';
 import ladduShot from '../assets/projects/laddu.webp';
+import ladduShotDark from '../assets/projects/laddu-dark.webp';
 import ladduMark from '../assets/projects/laddu-mark.webp';
 
 export interface Project {
@@ -18,6 +19,8 @@ export interface Project {
   source?: string;
   shot: ImageMetadata;
   shotAlt: string;
+  /** Optional dark-mode screenshot, shown instead of `shot` in dark mode. */
+  shotDark?: ImageMetadata;
   /** Square icon next to the name. Set `pixel` for pixel art. */
   mark: ImageMetadata;
   pixel?: boolean;
@@ -52,6 +55,7 @@ export const projects: Project[] = [
     live: 'https://laddu.wtf',
     source: 'https://github.com/mohiwalla/laddu',
     shot: ladduShot,
+    shotDark: ladduShotDark,
     shotAlt: 'The laddu.wtf landing page with a smiling laddoo mascot in a bow tie.',
     mark: ladduMark,
   },
