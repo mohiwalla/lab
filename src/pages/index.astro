@@ -1,0 +1,93 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { projects } from '../data/projects';
+
+const fmt = (ym: string) =>
+  new Date(`${ym}-01T00:00:00Z`).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+const num = (i: number) => String(i + 1).padStart(2, '0');
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
+---
+
+<Base title="lab · mohiwalla" description="Experimental projects by mohiwalla.">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3Z"></path></symbol>
+    <symbol id="github" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></symbol>
+  </svg>
+  <div class="wrap">
+    <header class="mast">
+      <a class="brand" href="/" aria-label="lab, home"><i>lab</i><span class="dot">.</span>mohiwalla</a>
+      <nav aria-label="Elsewhere">
+        <a href="https://mohiwalla.com" {...ext}>portfolio</a>
+        <a href="https://github.com/mohiwalla" {...ext}>gh</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <h1>The lab<span class="dot">.</span></h1>
+          <p class="lede">Experimental side projects and digital toys.</p>
+        </div>
+        <nav class="index" aria-label="Contents">
+          <ol>
+            {projects.map((p, i) => (
+              <li>
+                <a href={`#${p.slug}`}>
+                  <span class="n">{num(i)}</span>
+                  <span class="t">{p.name}</span>
+                  <span class="lead"></span>
+                  <time class="d" datetime={p.date}>{fmt(p.date)}</time>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </section>
+
+      <div class="entries">
+        {projects.map((p, i) => (
+          <article class="entry" id={p.slug}>
+            <div class="no">
+              <span class="num">{num(i)}</span>
+              <time datetime={p.date}>{fmt(p.date)}</time>
+            </div>
+            <div class="text">
+              <h2 class="name">
+                <Image class:list={['mark', { pixel: p.pixel }]} src={p.mark} alt="" width={64} height={64} draggable="false" />
+                {p.name}
+              </h2>
+              <p class="hook">{p.hook}</p>
+              <p class="desc">{p.description}</p>
+              <p class="links">
+                <a class="go" href={p.live} {...ext}><svg class="ico line" aria-hidden="true"><use href="#globe"></use></svg>Open</a>
+                {p.source && (
+                  <a class="go" href={p.source} {...ext}><svg class="ico fill" aria-hidden="true"><use href="#github"></use></svg>Source</a>
+                )}
+              </p>
+            </div>
+            <a class="fig" href={p.live} {...ext} tabindex="-1" aria-hidden="true">
+              <Image
+                class:list={{ invert: p.invertInDark }}
+                src={p.shot}
+                alt={p.shotAlt}
+                widths={[640, 960, 1280]}
+                sizes="(min-width: 64em) 30rem, 100vw"
+                loading={i === 0 ? 'eager' : 'lazy'}
+                draggable="false"
+              />
+            </a>
+          </article>
+        ))}
+      </div>
+    </main>
+
+    <footer>
+      <span>mohiwalla, {new Date().getFullYear()}</span>
+      <nav aria-label="Links">
+        <a href="https://mohiwalla.com" {...ext}>portfolio</a>
+        <a href="https://github.com/mohiwalla" {...ext}>gh</a>
+      </nav>
+    </footer>
+  </div>
+</Base>
